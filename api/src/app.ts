@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
-import cors from "cors";
+import helmet from 'helmet';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import dotenv from "dotenv";
 import { connectDb } from "./config/dbConnection";
 import { sendErrorResponse } from "./utils/responseHandlers";
@@ -13,11 +15,19 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(morgan("dev"));
-app.use(cors({ origin: process.env.FRONTEND_URL as string }));
+// Middleware setup
+app.use(helmet()); 
+app.use(morgan("dev")); 
+app.use(cors({ origin: process.env.FRONTEND_URL })); 
+const limiter = rateLimit({ 
+  windowMs: 60 * 1000, 
+  max: 100, 
+});
+app.use(limiter); 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false })); 
 
+// Database connection
 connectDb();
 
 app.use('/auth', authRouter);
