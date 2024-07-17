@@ -5,7 +5,7 @@ import { TokenService } from './token.service';
 import * as jwtDecode from 'jwt-decode';
 import { ApiResponse } from '../models/responseModel';
 import { AuthResponseData } from '../models/authModels';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable()
 export class AuthService  {
@@ -29,10 +29,25 @@ export class AuthService  {
   }
 
   employeeLogin(email: string, password: string): Observable<ApiResponse<AuthResponseData>> {
-    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/login`, { email, password });
+    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/employee/login`, { email, password })
+      .pipe(
+        tap(response => {
+          if (response.success) {
+            this.tokenService.setTokens(response.data.token, response.data.refreshToken);
+          }
+        })
+      );
   }
+
   adminLogin(email: string, password: string): Observable<ApiResponse<AuthResponseData>> {
-    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/login`, { email, password });
+    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/admin/login`, { email, password })
+      .pipe(
+        tap(response => {
+          if (response.success) {
+            this.tokenService.setTokens(response.data.token, response.data.refreshToken);
+          }
+        })
+      );
   }
 
   getRefreshToken(refreshToken: string): Observable<ApiResponse<AuthResponseData>> {
