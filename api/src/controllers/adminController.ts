@@ -1,102 +1,131 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import Designation from '../models/Designation';
 import Location from '../models/Location';
 import bcrypt from 'bcryptjs';
+import Employee from '../models/Employee';
+import { sendErrorResponse, sendSuccessResponse } from '../utils/responseHandlers';
 
-// Get all employees
-export const getEmployees = async (req: Request, res: Response) => {
+export const getEmployees = async (req: Request, res: Response,next:NextFunction) => {
   try {
-    const employees = await Employee.find()
-      .populate('designation', 'name')
-      .populate('location', 'name');
-    res.status(200).json(employees);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    const employees = await Employee.aggregate([
+      {
+        $lookup: {
+          from: 'designations', 
+          localField: 'designation',
+          foreignField: '_id',
+          as: 'designation'
+        }
+      },
+      {
+        $lookup: {
+          from: 'locations', 
+          localField: 'location',
+          foreignField: '_id',
+          as: 'location'
+        }
+      },
+      {
+        $project: {
+          password: 0 
+        }
+      }
+    ]);
+
+    sendSuccessResponse(res, employees,200);
+  } catch (error) {
+      next(error)
   }
 };
 
-// Create a new employee
-export const createEmployee = async (req: Request, res: Response) => {
-  try {
-    const { name, age, designation, phone, employeeId, email, address, password, location } = req.body;
+export const createEmployee = async (req: Request, res: Response, next: NextFunction) => {
+  const { name, age, designationName, phone, employeeId, email, address, password, locationName } = req.body;
 
-    // Hash the password
+  try {
     const hashedPassword = await bcrypt.hash(password, 10);
+    let designationId;
+    let designation = await Designation.findOne({ name: designationName });
+    if (designation) {
+      designationId = designation._id;
+    } else {
+      designation = new Designation({ name: designationName });
+      await designation.save();
+      designationId = designation._id;
+    }
+
+    let locationId;
+    let location = await Location.findOne({ name: locationName });
+    if (location) {
+      locationId = location._id;
+    } else {
+      location = new Location({ name: locationName });
+      await location.save();
+      locationId = location._id;
+    }
+
+    const existingEmployee = await Employee.findOne({ $or: [{ employeeId }, { email }] });
+    if (existingEmployee) {
+      return sendErrorResponse(res,'Employee with the same Employee ID or Email already exists',400);
+    }
 
     const newEmployee = new Employee({
       name,
       age,
-      designation,
+      designation: designationId,
       phone,
       employeeId,
       email,
       address,
       password: hashedPassword,
-      location,
+      location: locationId,
     });
 
+    // Save the new employee
     const savedEmployee = await newEmployee.save();
-    res.status(201).json(savedEmployee);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    sendSuccessResponse(res, { employee: savedEmployee },201);
+  } catch (error) {
+    next(error);
   }
 };
 
 // Update an employee
-export const updateEmployee = async (req: Request, res: Response) => {
+export const updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
-    const { name, age, designation, phone, employeeId, email, address, password, location } = req.body;
-
-    const updatedEmployee = await Employee.findByIdAndUpdate(
-      id,
-      { name, age, designation, phone, employeeId, email, address, password, location },
-      { new: true }
-    );
-
-    if (!updatedEmployee) {
-      return res.status(404).json({ message: 'Employee not found' });
-    }
-
-    res.status(200).json(updatedEmployee);
+    throw new Error('Method is not Implemented')
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err)
   }
 };
 
 // Delete an employee
-export const deleteEmployee = async (req: Request, res: Response) => {
+export const deleteEmployee = async (req: Request, res: Response,next:NextFunction) => {
   try {
     const { id } = req.params;
-
     const deletedEmployee = await Employee.findByIdAndDelete(id);
-
     if (!deletedEmployee) {
-      return res.status(404).json({ message: 'Employee not found' });
+      return sendErrorResponse(res, 'Employee not found', 404);
     }
-
-    res.status(200).json({ message: 'Employee deleted' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    sendSuccessResponse(res, { message: 'Employee deleted'},200);
+  } catch (error) {
+    next(error)
   }
 };
 
-// Get designations
-export const getDesignations = async (req: Request, res: Response) => {
+
+export const getDesignations = async (req: Request, res: Response,next:NextFunction) => {
   try {
     const designations = await Designation.find();
-    res.status(200).json(designations);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    sendSuccessResponse(res, {designations},200);
+  } catch (error) {
+    next(error)
   }
 };
 
 // Get locations
-export const getLocations = async (req: Request, res: Response) => {
+export const getLocations = async (req: Request, res: Response,next:NextFunction) => {
   try {
     const locations = await Location.find();
-    res.status(200).json(locations);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    sendSuccessResponse(res, {locations},200);
+  } catch (error) {
+    next(error)
   }
 };
