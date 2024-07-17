@@ -10,18 +10,18 @@ const refreshToken = async (refreshToken: string): Promise<any> => {
   const authService = inject(AuthService);
 
   return new Promise((resolve, reject) => {
-    // authService.getRefreshToken(refreshToken).subscribe({
-    //   next: (res) => {
-    //     if (res.success) {
-    //       resolve(res.data);
-    //     } else {
-    //       reject(res.error.message);
-    //     }
-    //   },
-    //   error: (err) => {
-    //     reject(err);backendUrl
-    //   }
-    // });
+    authService.getRefreshToken(refreshToken).subscribe({
+      next: (res) => {
+        if (res.success) {
+          resolve(res.data);
+        } else {
+          reject(res.error.message);
+        }
+      },
+      error: (err) => {
+        reject(err);
+      }
+    });
   });
 };
 
@@ -39,9 +39,9 @@ const handle401Error = (request: HttpRequest<any>, next: HttpHandlerFn): Observa
       return from(refreshToken(refresh_Token as string)).pipe(
         switchMap((newToken: any) => {
           isRefreshing = false;
-          tokenService.setTokens(newToken.token, newToken.refreshToken);
-          refreshTokenSubject.next(newToken.token);
-          return next(addTokenHeader(request, newToken.token));
+          tokenService.setTokens(newToken.accessToken, newToken.refreshToken);
+          refreshTokenSubject.next(newToken.accessToken);
+          return next(addTokenHeader(request, newToken.accessToken));
         }),
         catchError((err) => {
           isRefreshing = false;

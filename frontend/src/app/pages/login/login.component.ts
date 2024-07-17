@@ -10,6 +10,8 @@ import {
 import { PASSWORD_PATTERN } from '../../constants/password-pattern';
 import { AuthService } from '../../services/auth.service';
 import { LoaderService } from '../../services/loader.service';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -24,10 +26,13 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private toastr: ToastrService,
+    private router:Router
   ) {}
 
   ngOnInit(): void {
+
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: [
@@ -51,18 +56,22 @@ export class LoginComponent implements OnInit {
       if (isAdmin) {
         this.authService.adminLogin(email, password).subscribe({
           next: () => {
+            this.router.navigate(['/admin']);
             this.loaderService.hide();
           },
-          error: () => {
+          error: (error) => {
+            this.toastr.error(error);
             this.loaderService.hide();
           },
         });
       } else {
         this.authService.employeeLogin(email, password).subscribe({
           next: () => {
+            this.router.navigate(['/']);
             this.loaderService.hide();
           },
-          error: () => {
+          error: (error) => {
+            this.toastr.error(error);
             this.loaderService.hide();
           },
         });

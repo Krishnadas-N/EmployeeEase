@@ -1,0 +1,55 @@
+.form-input {
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.btn-submit {
+  cursor: pointer;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.btn-cancel {
+  cursor: pointer;
+  background-color: #eee;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.btn-close {
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #ccc;
+}
+
+.btn-close:hover {
+  color: #666;
+}
+
+.text-red-500 {
+  color: #e53e3e;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.border-red-500 {
+  border-color: #e53e3e;
+}

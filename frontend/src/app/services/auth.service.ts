@@ -6,6 +6,7 @@ import * as jwtDecode from 'jwt-decode';
 import { ApiResponse } from '../models/responseModel';
 import { AuthResponseData } from '../models/authModels';
 import { Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthService  {
@@ -13,7 +14,8 @@ export class AuthService  {
 
   constructor(
     private http: HttpClient,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private router:Router
   ) {}
 
   public isAuthenticated(): boolean {
@@ -33,7 +35,7 @@ export class AuthService  {
       .pipe(
         tap(response => {
           if (response.success) {
-            this.tokenService.setTokens(response.data.token, response.data.refreshToken);
+            this.tokenService.setTokens(response.data.accessToken, response.data.refreshToken);
           }
         })
       );
@@ -44,17 +46,18 @@ export class AuthService  {
       .pipe(
         tap(response => {
           if (response.success) {
-            this.tokenService.setTokens(response.data.token, response.data.refreshToken);
+            this.tokenService.setTokens(response.data.accessToken, response.data.refreshToken);
           }
         })
       );
   }
 
   getRefreshToken(refreshToken: string): Observable<ApiResponse<AuthResponseData>> {
-    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/verify-token`, { refreshToken });
+    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/refresh-token`, { refreshToken });
   }
 
   logout(): void {
     this.tokenService.clearTokens();
+    this.router.navigate(['/login']);
   }
 }

@@ -14,6 +14,7 @@ export const errorHandlerInterceptor: HttpInterceptorFn = (req, next) => {
           errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
         }
       }
+      console.log(errorMessage);
       return throwError(()=>errorMessage);
     })
   );

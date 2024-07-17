@@ -1,4 +1,4 @@
 export  type AuthResponseData = {
-  token: string;
+  accessToken: string;
   refreshToken: string;
 };
