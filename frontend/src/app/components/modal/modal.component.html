@@ -20,7 +20,7 @@
       <div *ngIf="f['age'].invalid && (f['age'].dirty || f['age'].touched)" class="text-red-500 text-sm mt-1">
         <div *ngIf="f['age'].errors?.['required']">Age is required.</div>
         <div *ngIf="f['age'].errors?.['pattern']">Age must be a number.</div>
-        <div *ngIf="f['age'].errors?.['min'] || f['age'].errors?.['max']">Age must be between 18 and 100.</div>
+        <div *ngIf="f['age'].errors?.['min'] || f['age'].errors?.['max'] || f['age'].errors?.['invalidAge']">Age must be between 18 and 100.</div>
       </div>
     </div>
     <div class="flex flex-col mb-2">
@@ -28,7 +28,6 @@
       <select id="location" formControlName="location"
               class="mb-2 mt-1 text-gray-600 focus:outline-none focus:border focus:border-black font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
               [ngClass]="{ 'border-red-500': f['location'].invalid && (f['location'].dirty || f['location'].touched) }">
-        <option value="" selected>Add Location</option>
         <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
         <option value="addNewLocation">Add New Location</option>
       </select>
@@ -101,7 +100,6 @@
     <select id="designation" formControlName="designation"
             class="mb-2 mt-1 text-gray-600 focus:outline-none focus:border focus:border-black font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
             [ngClass]="{ 'border-red-500': f['designation'].invalid && (f['designation'].dirty || f['designation'].touched) }">
-            <option value="" selected>Add Designation</option>
             <option *ngFor="let designation of designations" [value]="designation.title">{{ designation.title }}</option>
       <option value="addNewDesignation">Add New Designation</option>
     </select>

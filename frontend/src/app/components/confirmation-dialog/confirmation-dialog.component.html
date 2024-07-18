@@ -1,0 +1,10 @@
+<div class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+    <h2 class="text-xl font-semibold mb-4">{{ message }}</h2>
+    <div class="flex justify-end">
+      <button class="bg-gray-300 text-black rounded px-3 py-1 mr-2" (click)="confirm(false)">Cancel</button>
+      <button class="bg-red-500 text-white rounded px-3 py-1" (click)="confirm(true)">Delete</button>
+    </div>
+  </div>
+</div>
+<div class="fixed inset-0 bg-black opacity-50"></div>

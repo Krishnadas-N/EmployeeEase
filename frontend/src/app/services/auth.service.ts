@@ -8,7 +8,9 @@ import { AuthResponseData } from '../models/authModels';
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
-@Injectable()
+@Injectable({
+  providedIn:'root'
+})
 export class AuthService  {
   private apiUrl = `${environment.backendUrl}/auth`;
 
@@ -22,6 +24,7 @@ export class AuthService  {
     const token = this.tokenService.getAccessToken();
     try {
       const decodedToken = jwtDecode.jwtDecode(token as string);
+      console.log(decodedToken)
       const now = Date.now().valueOf() / 1000;
       return  decodedToken &&  decodedToken.exp? decodedToken.exp > now : false;
     } catch (error) {
@@ -30,8 +33,8 @@ export class AuthService  {
     }
   }
 
-  employeeLogin(email: string, password: string): Observable<ApiResponse<AuthResponseData>> {
-    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/employee/login`, { email, password })
+  employeeLogin(loginCredential:string,password: string): Observable<ApiResponse<AuthResponseData>> {
+    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/employee/login`, { loginCredential ,password})
       .pipe(
         tap(response => {
           if (response.success) {

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Designation, Employee, Location,EmployeeData } from '../models/employeeModels';
+import { Designation, Employee, Location,EmployeeData, EmployeeDetail } from '../models/employeeModels';
 import { ApiResponse } from '../models/responseModel';
 
 @Injectable({
@@ -18,8 +18,8 @@ export class EmployeeService {
     page: number = 1,
     pageSize: number = 6,
     searchQuery: string = '',
-    location: string = 'All',
-    designation: string = 'All'
+    location: string,
+    designation: string 
   ): Observable<ApiResponse<EmployeeData>> {
     let queryParams = `page=${page}&pageSize=${pageSize}&searchQuery=${searchQuery}`;
     if (location && location !== 'All') {
@@ -30,8 +30,8 @@ export class EmployeeService {
     }
     return this.http.get<ApiResponse<EmployeeData>>(`${this.adminBaseUrl}/employees?${queryParams}`);
   }
-  getEmployee(id: string): Observable<ApiResponse<Employee>> {
-    return this.http.get<ApiResponse<Employee>>(`${this.employeeBaseUrl}/employees/${id}`);
+  getEmployee(): Observable<ApiResponse<EmployeeDetail>> {
+    return this.http.get<ApiResponse<EmployeeDetail>>(`${this.employeeBaseUrl}/profile`);
   }
 
   addEmployee(employee: Employee): Observable<ApiResponse<Employee>> {
@@ -49,4 +49,9 @@ export class EmployeeService {
   getLocationAndDesignationDetails(): Observable<ApiResponse<{locations:Location[], designations:Designation[]}>>{
     return this.http.get<ApiResponse<{locations:Location[], designations:Designation[]}>>(`${this.adminBaseUrl}/details`);
   }
+  getAdminDashboardDetails(): Observable<ApiResponse<{totalEmployeesCount:number, employeesAddedPast12HoursCount:number}>>{
+    return this.http.get<ApiResponse<{totalEmployeesCount:number, employeesAddedPast12HoursCount:number}>>(`${this.adminBaseUrl}/dashboard`);
+  }
+
+  
 }

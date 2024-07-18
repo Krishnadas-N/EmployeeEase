@@ -5,8 +5,8 @@ import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModu
 import { PASSWORD_PATTERN } from '../../constants/password-pattern';
 import { CommonModule, } from '@angular/common';
 import { EmployeeService } from '../../services/employee.service';
-import { ToastrService } from 'ngx-toastr';
 import { Designation ,Location} from '../../models/employeeModels';
+import { SnackBarService } from '../../services/snack-bar.service';
 @Component({
   selector: 'app-modal',
   standalone: true,
@@ -30,12 +30,12 @@ export class ModalComponent implements OnInit{
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private employeeService:EmployeeService,
-    private toastr:ToastrService
+    private toastr:SnackBarService
   ) {
     this.getLocationAndDesignationDatas()
     this.employeeForm = this.fb.group({
       name: ['', Validators.required],
-      age: ['', Validators.required],
+      age: ['', [Validators.required, this.ageValidator]],
       designation: ['', Validators.required],
       employeeId: ['', [Validators.required, Validators.pattern(/^E\d{5}$/)]],
       newDesignation: [''],
@@ -49,9 +49,21 @@ export class ModalComponent implements OnInit{
     if (data) {
       this.isEditMode = true;
       this.employeeForm.patchValue(data);
+      this.employeeForm.patchValue({
+        designation:data.designation.title,
+        location:data.location.name
+      })
+      const passwordControl = this.employeeForm.get('password');
+      passwordControl!.clearValidators(); // Remove all validators
+      passwordControl!.setValidators([Validators.pattern(PASSWORD_PATTERN)]);
     }
   }
-
+  ageValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    if (control.value !== undefined && (isNaN(control.value) || control.value < 18)) {
+      return { 'invalidAge': true };
+    }
+    return null;
+  }
   ngOnInit(): void {
     this.employeeForm.get('location')!.valueChanges.subscribe(value => {
       if (value === 'addNewLocation') {
@@ -95,21 +107,21 @@ export class ModalComponent implements OnInit{
       if (this.isEditMode) {
         this.employeeService.updateEmployee(this.data._id, formData).subscribe({
           next: (res) => {
-            this.toastr.success('Successfully updated employee details');
+            this.toastr.showSuccess('Successfully updated employee details');
             this.dialogRef.close(formData);
           },
           error: (err) => {
-            this.toastr.error(err.message || 'Failed to update employee');
+            this.toastr.showError(err || 'Failed to update employee');
           }
         });
       } else {
         this.employeeService.addEmployee(formData).subscribe({
           next: (res) => {
-            this.toastr.success('Successfully added new employee');
+            this.toastr.showSuccess('Successfully added new employee');
             this.dialogRef.close(formData);
           },
           error: (err) => {
-            this.toastr.error(err.message || 'Failed to add employee');
+            this.toastr.showError(err || 'Failed to add employee');
           }
         });
       }

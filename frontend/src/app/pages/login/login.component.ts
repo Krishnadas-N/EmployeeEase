@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 import { LoaderService } from '../../services/loader.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { SnackBarService } from '../../services/snack-bar.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -27,7 +28,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private loaderService: LoaderService,
-    private toastr: ToastrService,
+    private toastr:SnackBarService,
     private router:Router
   ) {}
 
@@ -39,7 +40,6 @@ export class LoginComponent implements OnInit {
         '',
         [Validators.required, Validators.pattern(PASSWORD_PATTERN)],
       ],
-      isAdmin: [false],
     });
   }
   get f() {
@@ -51,31 +51,18 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     if (this.loginForm.valid) {
-      const { email, password, isAdmin } = this.loginForm.value;
+      const { email, password } = this.loginForm.value;
       this.loaderService.show();
-      if (isAdmin) {
         this.authService.adminLogin(email, password).subscribe({
           next: () => {
             this.router.navigate(['/admin']);
             this.loaderService.hide();
           },
           error: (error) => {
-            this.toastr.error(error);
+            this.toastr.showError(error);
             this.loaderService.hide();
           },
         });
-      } else {
-        this.authService.employeeLogin(email, password).subscribe({
-          next: () => {
-            this.router.navigate(['/']);
-            this.loaderService.hide();
-          },
-          error: (error) => {
-            this.toastr.error(error);
-            this.loaderService.hide();
-          },
-        });
-      }
     } else {
       this.loginForm.markAllAsTouched();
     }

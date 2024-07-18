@@ -8,11 +8,12 @@ import { FormsModule } from '@angular/forms';
 import { EmployeeService } from '../../services/employee.service';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-employees-listing',
   standalone: true,
-  imports: [MatDialogModule,PaginationComponent,FormsModule,CommonModule],
+  imports: [MatDialogModule,PaginationComponent,FormsModule,CommonModule,ConfirmationDialogComponent],
   templateUrl: './employees-listing.component.html',
   styleUrl: './employees-listing.component.css',
 })
@@ -22,15 +23,18 @@ export class EmployeesListingComponent implements OnInit {
   locations: Location[] = [];
   designations: Designation[] = [];
   
-  selectedLocation: string = 'All';
-  selectedDesignation: string = 'All';
+  selectedLocation!: string ;
+  selectedDesignation!: string;
   searchQuery: string = '';
   
   totalPages: number = 0;
   totalCount: number = 0;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 6;
   currentPage: number = 1;
 
+  showConfirmationDialog: boolean = false;
+  deleteMessage: string = 'Are you sure you want to delete this employee?';
+  employeeToDelete: EmployeeDetail|null=null;
   constructor(
     public dialog: MatDialog,
     private loaderService: LoaderService,
@@ -84,10 +88,10 @@ export class EmployeesListingComponent implements OnInit {
     });
   }
 
-  openEditDialog(employee: Employee): void {
+  openEditDialog(employee: EmployeeDetail): void {
     const dialogRef = this.dialog.open(ModalComponent, {
       width: '600px',
-      data: employee, // Pass employee data for edit mode
+      data: employee, 
       disableClose: true,
       hasBackdrop: true,
       panelClass: 'custom-dialog-container'
@@ -105,10 +109,6 @@ export class EmployeesListingComponent implements OnInit {
     this.loadEmployees();
   }
 
-  editEmployee(employee: EmployeeDetail): void {
-    // Implement edit logic here
-    console.log('Edit employee', employee);
-  }
 
   deleteEmployee(employee: EmployeeDetail): void {
     this.employeeService.deleteEmployee(employee._id as string).subscribe({
@@ -120,6 +120,23 @@ export class EmployeesListingComponent implements OnInit {
         this.toastr.error('Failed to delete employee');
       }
     });
+  }
+  confirmDelete(employee: any) {
+    this.employeeToDelete = employee;
+    this.showConfirmationDialog = true;
+  }
+
+  onConfirm(result: boolean) {
+    if (result && this.employeeToDelete) {
+      this.deleteEmployee(this.employeeToDelete);
+    }
+    this.showConfirmationDialog = false;
+  }
+  resetFilters() {
+    this.searchQuery = '';
+    this.selectedDesignation = '';
+    this.selectedLocation = '';
+    this.loadEmployees();
   }
 
   getLocationAndDesignationDatas(){

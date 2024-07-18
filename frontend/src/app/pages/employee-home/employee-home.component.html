@@ -1,0 +1,49 @@
+<!-- home.component.html -->
+<div class="min-h-screen bg-gray-900 text-white py-6 flex flex-col justify-center sm:py-12">
+  <div class="relative py-3 sm:max-w-xl sm:mx-auto">
+    <div class="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-900 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-lg"></div>
+    <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-lg sm:p-20">
+      <div class="max-w-md mx-auto">
+        <div class="text-center">
+          <h1 class="text-4xl font-bold text-gray-900">Welcome, {{ employer.name }}</h1>
+          <p class="mt-4 text-gray-600">Here are your profile details</p>
+        </div>
+        <div class="mt-8">
+          <div class="flex items-center justify-center">
+            <div class="w-24 h-24 rounded-full border-2 border-gray-300 overflow-hidden">
+              <img [src]="employer.profileImage" alt="Profile Image" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <div class="text-center mt-4">
+            <h2 class="text-2xl font-semibold">{{ employer.name }}</h2>
+            <p class="text-gray-700">{{ employer.designation }}</p>
+          </div>
+          <div class="mt-6">
+            <div class="flex items-center mb-3">
+              <span class="w-20 font-semibold text-gray-700">Email:</span>
+              <span>{{ employer.email }}</span>
+            </div>
+            <div class="flex items-center mb-3">
+              <span class="w-20 font-semibold text-gray-700">Phone:</span>
+              <span>{{ employer.phone }}</span>
+            </div>
+            <div class="flex items-center mb-3">
+              <span class="w-20 font-semibold text-gray-700">Address:</span>
+              <span>{{ employer.address }}</span>
+            </div>
+            <div class="flex items-center mb-3">
+              <span class="w-20 font-semibold text-gray-700">Location:</span>
+              <span>{{ employer.location }}</span>
+            </div>
+          </div>
+          <div class="mt-8 flex justify-center">
+      
+          </div>
+          <div class="mt-4 flex justify-center">
+            <button (click)="logout()" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
