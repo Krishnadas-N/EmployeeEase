@@ -29,6 +29,8 @@ const EmployeeSchema: Schema = new Schema({
   address: { type: String, required: true, maxlength: 100 },
   password: { type: String, required: true },
   location: { type: Schema.Types.ObjectId, ref: "Location", required: true },
+},{
+  timestamps:true
 });
 
 export default mongoose.model<IEmployee>("Employee", EmployeeSchema);

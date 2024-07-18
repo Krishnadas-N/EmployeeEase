@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import Employee from '../models/Employee'; 
 import { sendErrorResponse, sendSuccessResponse } from '../utils/responseHandlers';
-import { generateAccessToken, generateRefreshToken } from '../utils/jwtTokenGenerator';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwtTokenGenerator';
 import Admin from '../models/Admin';
+import { Payload } from '../dtos/jwtPayloadModel';
 
 export const adminLogin = async (req: Request, res: Response,next:NextFunction) => {
     const { email, password } = req.body;
@@ -13,8 +14,7 @@ export const adminLogin = async (req: Request, res: Response,next:NextFunction) 
         return sendErrorResponse(res, 'Admin not found', 404);
       }
   
-      const isMatch = await bcrypt.compare(password, admin.password);
-      if (!isMatch) {
+      if (admin.password !== password) {
         return sendErrorResponse(res, 'Invalid credentials', 401);
       }
   
@@ -28,12 +28,19 @@ export const adminLogin = async (req: Request, res: Response,next:NextFunction) 
 
 // Employee login
 export const employeeLogin = async (req: Request, res: Response,next:NextFunction) => {
-    const { email, password } = req.body;
+    const { loginCredential,password } = req.body;
     try {
-        const employee = await Employee.findOne({ email });
-        if (!employee) {
-            return sendErrorResponse(res, 'Employee not found', 404);
-        }
+      console.log( req.body);
+       const empIdPattern = /^E\d{5}$/;
+       const isEmpId = empIdPattern.test(loginCredential);
+       const employee = isEmpId
+       ? await Employee.findOne({ employeeId: loginCredential })
+       : await Employee.findOne({ name: loginCredential });
+
+      if (!employee) {
+          return sendErrorResponse(res, 'Employee not found', 404);
+      }
+
 
         const isMatch = await bcrypt.compare(password, employee.password);
         if (!isMatch) {
@@ -48,3 +55,20 @@ export const employeeLogin = async (req: Request, res: Response,next:NextFunctio
     }
 };
 
+export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return sendErrorResponse(res, 'Refresh token is required', 400);
+  }
+
+  try {
+    const decoded = verifyRefreshToken(refreshToken) as Payload;
+    const { id, role } = decoded;
+    const newAccessToken = generateAccessToken(id, role);
+    const newRefreshToken = generateRefreshToken(id, role);
+
+    sendSuccessResponse(res, { accessToken: newAccessToken, refreshToken: newRefreshToken });
+  } catch (error) {
+    return sendErrorResponse(res, 'Invalid refresh token', 401);
+  }
+};

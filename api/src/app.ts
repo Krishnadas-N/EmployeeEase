@@ -30,9 +30,10 @@ app.use(express.urlencoded({ extended: false }));
 // Database connection
 connectDb();
 
-app.use('/auth', authRouter);
+
 app.use('/admin', adminRouter);
 app.use('/employee', employeeRouter);
+app.use('/auth', authRouter);
 
 app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);

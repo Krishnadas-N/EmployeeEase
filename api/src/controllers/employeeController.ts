@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import Employee from '../models/Employee';
 import { sendErrorResponse, sendSuccessResponse } from '../utils/responseHandlers';
+import mongoose from 'mongoose';
 
 export const getEmployeeProfile = async (req: Request, res: Response,next:NextFunction) => {
   try {
-    const employeeId = req.user.id; 
+    const employeeId = req.user.userId; 
     const [employee] = await Employee.aggregate([
-        { $match: { _id: employeeId } }, 
+        { $match: { _id: new mongoose.Types.ObjectId(employeeId) } }, 
         {
           $lookup: {
             from: 'designations', 
@@ -23,6 +24,8 @@ export const getEmployeeProfile = async (req: Request, res: Response,next:NextFu
             as: 'location'
           }
         },
+        { $unwind: '$designation' },
+        { $unwind: '$location' },
         {
           $project: {
             password: 0

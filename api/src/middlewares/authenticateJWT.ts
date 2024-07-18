@@ -12,8 +12,9 @@ export const authenticateJWT = async (req: Request, res: Response, next: NextFun
     }
     try {
         const decoded: Payload = jwt.verify(token, process.env.JWT_SECRET!) as Payload;
+        console.log(decoded);
         if (decoded.role === 'employee') {
-            const employee = await Employee.findById(decoded.id);
+            const employee = await Employee.findById(decoded.userId);
             if (!employee) {
                 return sendErrorResponse(res, 'User not found or unauthorized', 401);
             }

@@ -1,5 +1,5 @@
 export interface Payload {
-    id: string;
+  userId: string;
     role: 'admin' | 'employee';
   }
   
