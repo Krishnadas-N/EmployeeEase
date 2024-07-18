@@ -4,6 +4,8 @@ import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
 import { authGuard } from './guards/auth.guard';
 import { roleBasedGuard } from './guards/role-based.guard';
 import { isLoggedGuard } from './guards/is-logged.guard';
+
+
 export const routes: Routes = [
   {
     path:'login',
@@ -18,8 +20,8 @@ export const routes: Routes = [
   {
     path:'',
     canActivate: [authGuard,roleBasedGuard],
-    data: { roles: ['admin','employee'] },
-    loadComponent:()=>import('./pages/login/login.component').then(m=>m.LoginComponent)
+    data: { roles: ['employee'] },
+    loadComponent:()=>import('./pages/employee-home/employee-home.component').then(m=>m.EmployeeHomeComponent)
   },
   {
    path:'admin',

@@ -11,29 +11,30 @@
         <div class="mt-8">
           <div class="flex items-center justify-center">
             <div class="w-24 h-24 rounded-full border-2 border-gray-300 overflow-hidden">
-              <img [src]="employer.profileImage" alt="Profile Image" class="w-full h-full object-cover">
+              <img src="https://tailwindflex.com/public/images/user.png" alt="Profile Image" class="w-full h-full object-cover">
             </div>
           </div>
           <div class="text-center mt-4">
-            <h2 class="text-2xl font-semibold">{{ employer.name }}</h2>
-            <p class="text-gray-700">{{ employer.designation }}</p>
+            <h2 class="text-2xl text-gray-900 font-semibold">{{ employer.name }}</h2>
+            <p class="text-gray-800">{{ employer.employeeId }}</p>
+            <p class="text-gray-700">{{ employer.designation.title }}</p>
           </div>
           <div class="mt-6">
             <div class="flex items-center mb-3">
               <span class="w-20 font-semibold text-gray-700">Email:</span>
-              <span>{{ employer.email }}</span>
+              <span class="text-gray-700">{{ employer.email }}</span>
             </div>
             <div class="flex items-center mb-3">
               <span class="w-20 font-semibold text-gray-700">Phone:</span>
-              <span>{{ employer.phone }}</span>
+              <span class="text-gray-700">{{ employer.phone }}</span>
             </div>
             <div class="flex items-center mb-3">
               <span class="w-20 font-semibold text-gray-700">Address:</span>
-              <span>{{ employer.address }}</span>
+              <span class="text-gray-700">{{ employer.address }}</span>
             </div>
             <div class="flex items-center mb-3">
               <span class="w-20 font-semibold text-gray-700">Location:</span>
-              <span>{{ employer.location }}</span>
+              <span class="text-gray-700">{{ employer.location.name }}</span>
             </div>
           </div>
           <div class="mt-8 flex justify-center">

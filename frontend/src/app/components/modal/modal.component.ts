@@ -7,6 +7,7 @@ import { CommonModule, } from '@angular/common';
 import { EmployeeService } from '../../services/employee.service';
 import { Designation ,Location} from '../../models/employeeModels';
 import { SnackBarService } from '../../services/snack-bar.service';
+import { LoaderService } from '../../services/loader.service';
 @Component({
   selector: 'app-modal',
   standalone: true,
@@ -29,6 +30,7 @@ export class ModalComponent implements OnInit{
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
+    private loaderService: LoaderService,
     private employeeService:EmployeeService,
     private toastr:SnackBarService
   ) {
@@ -96,6 +98,7 @@ export class ModalComponent implements OnInit{
   }
   onSubmit(): void {
     if (this.employeeForm.valid) {
+      this.loaderService.show(); 
       const formData = { ...this.employeeForm.value };
       if (formData.location === 'addNewLocation') {
         formData.location = formData.newLocation;
@@ -106,21 +109,26 @@ export class ModalComponent implements OnInit{
       console.log(formData)
       if (this.isEditMode) {
         this.employeeService.updateEmployee(this.data._id, formData).subscribe({
+          
           next: (res) => {
+            this.loaderService.hide(); 
             this.toastr.showSuccess('Successfully updated employee details');
             this.dialogRef.close(formData);
           },
           error: (err) => {
+            this.loaderService.hide(); 
             this.toastr.showError(err || 'Failed to update employee');
           }
         });
       } else {
         this.employeeService.addEmployee(formData).subscribe({
           next: (res) => {
+            this.loaderService.hide(); 
             this.toastr.showSuccess('Successfully added new employee');
             this.dialogRef.close(formData);
           },
           error: (err) => {
+            this.loaderService.hide(); 
             this.toastr.showError(err || 'Failed to add employee');
           }
         });

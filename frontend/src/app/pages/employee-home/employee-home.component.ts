@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EmployeeDetail } from '../../models/employeeModels';
 import { EmployeeService } from '../../services/employee.service';
 import { LoaderService } from '../../services/loader.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-employee-home',
@@ -14,6 +15,7 @@ export class EmployeeHomeComponent implements OnInit{
   employer!:EmployeeDetail;
   constructor(private employeeService:EmployeeService,
     private loaderService: LoaderService,
+    private authService:AuthService
   ){}
   ngOnInit(): void {
     this.loaderService.show()
@@ -22,11 +24,15 @@ export class EmployeeHomeComponent implements OnInit{
         this.loaderService.hide()
         if(res.success){
             this.employer = res.data
+            console.log( this.employer);
         }
       },
       error:()=>{
         this.loaderService.hide()
       }
     })
+  }
+  logout(){
+    this.authService.logout()
   }
 }
