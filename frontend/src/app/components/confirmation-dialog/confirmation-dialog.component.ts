@@ -5,7 +5,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './confirmation-dialog.component.html',
-  styleUrl: './confirmation-dialog.component.css'
+  styleUrl: './confirmation-dialog.component.css',
 })
 export class ConfirmationDialogComponent {
   @Input() message: string = 'Are you sure you want to delete this item?';

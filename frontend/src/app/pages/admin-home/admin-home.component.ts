@@ -7,18 +7,18 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [SidebarComponent,NgClass,RouterOutlet],
+  imports: [SidebarComponent, NgClass, RouterOutlet],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.css',
-  providers:[AuthService]
+  providers: [AuthService],
 })
 export class AdminHomeComponent {
   isSidebarOpen = true;
-  constructor(private tokenService:AuthService){}
+  constructor(private tokenService: AuthService) {}
   toggleSidebar() {
-      this.isSidebarOpen = !this.isSidebarOpen;
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
-  logout(){
-  this.tokenService.logout()
+  logout() {
+    this.tokenService.logout();
   }
 }

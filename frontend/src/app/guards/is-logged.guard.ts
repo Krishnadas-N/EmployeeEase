@@ -10,11 +10,13 @@ export const isLoggedGuard: CanActivateFn = (route, state) => {
   if (!token) {
     return true;
   }
-  const router = inject(Router)
+  const router = inject(Router);
   const decodedToken = jwtDecode(token as string) as JwtPayload;
   const now = Date.now().valueOf() / 1000;
   if (decodedToken.exp && decodedToken.exp <= now) {
     return true;
   }
-  return decodedToken.role === 'admin'? router.navigate(['/admin']) : router.navigate(['/admin'])
+  return decodedToken.role === 'admin'
+    ? router.navigate(['/admin'])
+    : router.navigate(['/admin']);
 };

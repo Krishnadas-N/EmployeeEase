@@ -1,8 +1,14 @@
-import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { inject } from "@angular/core";
-import { from, Observable, throwError, BehaviorSubject } from "rxjs";
-import { environment } from "../../environments/environment.development";
-import { TokenService } from "../services/token.service";
+import {
+  HttpEvent,
+  HttpHandlerFn,
+  HttpInterceptorFn,
+  HttpRequest,
+  HttpErrorResponse,
+} from '@angular/common/http';
+import { inject } from '@angular/core';
+import { from, Observable, throwError, BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment.development';
+import { TokenService } from '../services/token.service';
 import { catchError, filter, take, switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
@@ -20,15 +26,20 @@ const refreshToken = async (refreshToken: string): Promise<any> => {
       },
       error: (err) => {
         reject(err);
-      }
+      },
     });
   });
 };
 
 let isRefreshing = false;
-const refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+const refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<
+  string | null
+>(null);
 
-const handle401Error = (request: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> => {
+const handle401Error = (
+  request: HttpRequest<any>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<any>> => {
   const tokenService = inject(TokenService);
   if (!isRefreshing) {
     isRefreshing = true;
@@ -53,15 +64,18 @@ const handle401Error = (request: HttpRequest<any>, next: HttpHandlerFn): Observa
   }
 
   return refreshTokenSubject.pipe(
-    filter(token => token != null),
+    filter((token) => token != null),
     take(1),
-    switchMap(jwt => {
+    switchMap((jwt) => {
       return next(addTokenHeader(request, jwt!));
     })
   );
 };
 
-const addTokenHeader = (request: HttpRequest<any>, token: string): HttpRequest<any> => {
+const addTokenHeader = (
+  request: HttpRequest<any>,
+  token: string
+): HttpRequest<any> => {
   return request.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
 };
 
@@ -72,7 +86,7 @@ export const bearerTokenInterceptor: HttpInterceptorFn = (req, next) => {
     if (token) {
       req = addTokenHeader(req, token);
       return next(req).pipe(
-        catchError(error => {
+        catchError((error) => {
           if (error instanceof HttpErrorResponse && error.status === 401) {
             return handle401Error(req, next);
           } else {

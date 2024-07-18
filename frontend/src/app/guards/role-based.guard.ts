@@ -7,12 +7,17 @@ import { JwtPayload } from '../models/jwtPayloadModel';
 export const roleBasedGuard: CanActivateFn = (route, state) => {
   const tokenService = inject(TokenService);
   const token = tokenService.getAccessToken();
-  const router = inject(Router)
+  const router = inject(Router);
   const expectedRoles = route.data['roles'] as string[];
   const decodedToken = jwtDecode(token as string) as JwtPayload;
-  if (expectedRoles && expectedRoles.length > 0 && expectedRoles.includes(decodedToken.role)) {
-    return true; 
+  if (
+    expectedRoles &&
+    expectedRoles.length > 0 &&
+    expectedRoles.includes(decodedToken.role)
+  ) {
+    return true;
   }
-   return decodedToken.role === 'admin'? router.parseUrl('/admin') : router.parseUrl('/')
- 
+  return decodedToken.role === 'admin'
+    ? router.parseUrl('/admin')
+    : router.parseUrl('/');
 };

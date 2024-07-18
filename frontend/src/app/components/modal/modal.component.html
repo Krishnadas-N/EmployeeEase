@@ -1,134 +1,342 @@
 <mat-dialog-content class="mat-typography">
-  <h1 class="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
-      {{ isEditMode ? 'Edit Employee Details' : 'Enter Employee Details' }}
+  <h1
+    class="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4"
+  >
+    {{ isEditMode ? "Edit Employee Details" : "Enter Employee Details" }}
   </h1>
 
   <form [formGroup]="employeeForm">
-    <div class="flex flex-col mb-2 ">
-      <label for="name" class="text-gray-800 text-sm font-bold leading-tight tracking-normal">Name</label>
-      <input id="name" formControlName="name" class="form-input"
-             placeholder="John Doe">
-      <div *ngIf="f['name'].invalid && (f['name'].dirty || f['name'].touched)" class="text-red-500 text-sm mt-1">
+    <div class="flex flex-col mb-2">
+      <label
+        for="name"
+        class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+        >Name</label
+      >
+      <input
+        id="name"
+        formControlName="name"
+        class="form-input"
+        placeholder="John Doe"
+      />
+      <div
+        *ngIf="f['name'].invalid && (f['name'].dirty || f['name'].touched)"
+        class="text-red-500 text-sm mt-1"
+      >
         <div *ngIf="f['name'].errors?.['required']">Name is required.</div>
       </div>
     </div>
 
     <div class="flex flex-col mb-2">
-      <label for="age" class="text-gray-800 text-sm font-bold leading-tight tracking-normal">Age</label>
-      <input id="age" formControlName="age" class="form-input"
-             placeholder="30">
-      <div *ngIf="f['age'].invalid && (f['age'].dirty || f['age'].touched)" class="text-red-500 text-sm mt-1">
+      <label
+        for="age"
+        class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+        >Age</label
+      >
+      <input
+        id="age"
+        formControlName="age"
+        class="form-input"
+        placeholder="30"
+      />
+      <div
+        *ngIf="f['age'].invalid && (f['age'].dirty || f['age'].touched)"
+        class="text-red-500 text-sm mt-1"
+      >
         <div *ngIf="f['age'].errors?.['required']">Age is required.</div>
         <div *ngIf="f['age'].errors?.['pattern']">Age must be a number.</div>
-        <div *ngIf="f['age'].errors?.['min'] || f['age'].errors?.['max'] || f['age'].errors?.['invalidAge']">Age must be between 18 and 100.</div>
+        <div
+          *ngIf="f['age'].errors?.['min'] || f['age'].errors?.['max'] || f['age'].errors?.['invalidAge']"
+        >
+          Age must be between 18 and 100.
+        </div>
       </div>
     </div>
     <div class="flex flex-col mb-2">
       <label for="location" class="block text-gray-700">Location</label>
-      <select id="location" formControlName="location"
-              class="mb-2 mt-1 text-gray-600 focus:outline-none focus:border focus:border-black font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-              [ngClass]="{ 'border-red-500': f['location'].invalid && (f['location'].dirty || f['location'].touched) }">
-        <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
+      <select
+        id="location"
+        formControlName="location"
+        class="mb-2 mt-1 text-gray-600 focus:outline-none focus:border focus:border-black font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
+        [ngClass]="{
+          'border-red-500':
+            f['location'].invalid &&
+            (f['location'].dirty || f['location'].touched)
+        }"
+      >
+        <option *ngFor="let location of locations" [value]="location.name">
+          {{ location.name }}
+        </option>
         <option value="addNewLocation">Add New Location</option>
       </select>
-      <input *ngIf="showNewLocationInput" type="text" formControlName="newLocation" placeholder="Enter new location"
-      class="w-full h-10 px-3 text-sm border-gray-300 rounded border mt-2"
-      [ngClass]="{ 'border-red-500': f['newLocation'].invalid && (f['newLocation'].dirty || f['newLocation'].touched) }">
-      <div *ngIf="f['newLocation'].invalid && (f['newLocation'].dirty || f['newLocation'].touched)" class="text-red-500 text-sm mt-1">
-      <span *ngIf="f['newLocation'].errors?.['required']">New location is required.</span>
-      <span *ngIf="f['newLocation'].errors?.['pattern']">Location should start with a capital letter and subsequent letters should be lowercase. (e.g., New York)</span>
+      <input
+        *ngIf="showNewLocationInput"
+        type="text"
+        formControlName="newLocation"
+        placeholder="Enter new location"
+        class="w-full h-10 px-3 text-sm border-gray-300 rounded border mt-2"
+        [ngClass]="{
+          'border-red-500':
+            f['newLocation'].invalid &&
+            (f['newLocation'].dirty || f['newLocation'].touched)
+        }"
+      />
+      <div
+        *ngIf="
+          f['newLocation'].invalid &&
+          (f['newLocation'].dirty || f['newLocation'].touched)
+        "
+        class="text-red-500 text-sm mt-1"
+      >
+        <span *ngIf="f['newLocation'].errors?.['required']"
+          >New location is required.</span
+        >
+        <span *ngIf="f['newLocation'].errors?.['pattern']"
+          >Location should start with a capital letter and subsequent letters
+          should be lowercase. (e.g., New York)</span
+        >
       </div>
-      <div *ngIf="f['location'].invalid && (f['location'].dirty || f['location'].touched)" class="text-red-500 text-sm mt-1">
-        <span *ngIf="f['location'].errors?.['required']">Location is required.</span>
-        <span *ngIf="f['location'].errors?.['invalidLocationFormat']">Location should start with a capital letter and subsequent letters should be lowercase. (e.g., New York)</span>
+      <div
+        *ngIf="
+          f['location'].invalid &&
+          (f['location'].dirty || f['location'].touched)
+        "
+        class="text-red-500 text-sm mt-1"
+      >
+        <span *ngIf="f['location'].errors?.['required']"
+          >Location is required.</span
+        >
+        <span *ngIf="f['location'].errors?.['invalidLocationFormat']"
+          >Location should start with a capital letter and subsequent letters
+          should be lowercase. (e.g., New York)</span
+        >
       </div>
-     </div>
+    </div>
 
-     <div class="flex flex-col mb-2">
-      <label for="phone" class="text-gray-800 text-sm font-bold leading-tight tracking-normal">Phone</label>
-      <input id="phone" formControlName="phone" class="form-input"
-             placeholder="123-456-7890">
-      <div *ngIf="f['phone'].invalid && (f['phone'].dirty || f['phone'].touched)" class="text-red-500 text-sm mt-1">
+    <div class="flex flex-col mb-2">
+      <label
+        for="phone"
+        class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+        >Phone</label
+      >
+      <input
+        id="phone"
+        formControlName="phone"
+        class="form-input"
+        placeholder="123-456-7890"
+      />
+      <div
+        *ngIf="f['phone'].invalid && (f['phone'].dirty || f['phone'].touched)"
+        class="text-red-500 text-sm mt-1"
+      >
         <div *ngIf="f['phone'].errors?.['required']">Phone is required.</div>
-        <div *ngIf="f['phone'].errors?.['pattern']">Invalid phone format. Use XXX-XXX-XXXX.</div>
+        <div *ngIf="f['phone'].errors?.['pattern']">
+          Invalid phone format. Use XXX-XXX-XXXX.
+        </div>
       </div>
     </div>
 
     <div class="flex flex-col mb-2">
-      <label for="employeeId" class="text-gray-800 text-sm font-bold leading-tight tracking-normal">Employee ID</label>
-      <input id="employeeId" formControlName="employeeId" class="form-input"
-             placeholder="E12345">
-      <div *ngIf="f['employeeId'].invalid && (f['employeeId'].dirty || f['employeeId'].touched)" class="text-red-500 text-sm mt-1">
-        <div *ngIf="f['employeeId']?.errors?.['required']">Employee ID is required.</div>
-        <div *ngIf="f['employeeId'].errors?.['pattern']">Invalid format. Must start with 'E' followed by numbers.</div>
+      <label
+        for="employeeId"
+        class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+        >Employee ID</label
+      >
+      <input
+        id="employeeId"
+        formControlName="employeeId"
+        class="form-input"
+        placeholder="E12345"
+      />
+      <div
+        *ngIf="
+          f['employeeId'].invalid &&
+          (f['employeeId'].dirty || f['employeeId'].touched)
+        "
+        class="text-red-500 text-sm mt-1"
+      >
+        <div *ngIf="f['employeeId']?.errors?.['required']">
+          Employee ID is required.
+        </div>
+        <div *ngIf="f['employeeId'].errors?.['pattern']">
+          Invalid format. Must start with 'E' followed by numbers.
+        </div>
       </div>
     </div>
 
     <div class="flex flex-col mb-2">
-      <label for="email" class="text-gray-800 text-sm font-bold leading-tight tracking-normal">Email</label>
-      <input id="email" formControlName="email" class="form-input"
-             placeholder="example@example.com">
-      <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)" class="text-red-500 text-sm mt-1">
+      <label
+        for="email"
+        class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+        >Email</label
+      >
+      <input
+        id="email"
+        formControlName="email"
+        class="form-input"
+        placeholder="example@example.com"
+      />
+      <div
+        *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)"
+        class="text-red-500 text-sm mt-1"
+      >
         <div *ngIf="f['email'].errors?.['required']">Email is required.</div>
         <div *ngIf="f['email'].errors?.['pattern']">Invalid email format.</div>
       </div>
     </div>
 
     <div class="flex flex-col mb-2">
-      <label for="address" class="text-gray-800 text-sm font-bold leading-tight tracking-normal">Address</label>
-      <input id="address" formControlName="address" class="form-input"
-             placeholder="123 Main St, City, Country" maxlength="100">
-      <div *ngIf="f['address'].invalid && (f['address'].dirty || f['address'].touched)" class="text-red-500 text-sm mt-1">
-        <div *ngIf="f['address'].errors?.['maxlength']">Address cannot exceed 100 characters.</div>
+      <label
+        for="address"
+        class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+        >Address</label
+      >
+      <input
+        id="address"
+        formControlName="address"
+        class="form-input"
+        placeholder="123 Main St, City, Country"
+        maxlength="100"
+      />
+      <div
+        *ngIf="
+          f['address'].invalid && (f['address'].dirty || f['address'].touched)
+        "
+        class="text-red-500 text-sm mt-1"
+      >
+        <div *ngIf="f['address'].errors?.['maxlength']">
+          Address cannot exceed 100 characters.
+        </div>
       </div>
     </div>
 
     <div class="flex flex-col mb-2">
-      <label for="password" class="text-gray-800 text-sm font-bold leading-tight tracking-normal">Password</label>
-      <input id="password" type="password" formControlName="password" class="form-input"
-             placeholder="******">
-      <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)" class="text-red-500 text-sm mt-1">
-        <div *ngIf="f['password'].errors?.['required']">Password is required.</div>
-        <div *ngIf="f['password'].errors?.['minlength']">Password must be at least 8 characters long.</div>
-        <div *ngIf="f['password'].errors?.['pattern']">It must be at least 8 characters long and
-          include at least one uppercase letter, one lowercase letter, one
-          number, and one special character.</div>
+      <label
+        for="password"
+        class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+        >Password</label
+      >
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        class="form-input"
+        placeholder="******"
+      />
+      <div
+        *ngIf="
+          f['password'].invalid &&
+          (f['password'].dirty || f['password'].touched)
+        "
+        class="text-red-500 text-sm mt-1"
+      >
+        <div *ngIf="f['password'].errors?.['required']">
+          Password is required.
+        </div>
+        <div *ngIf="f['password'].errors?.['minlength']">
+          Password must be at least 8 characters long.
+        </div>
+        <div *ngIf="f['password'].errors?.['pattern']">
+          It must be at least 8 characters long and include at least one
+          uppercase letter, one lowercase letter, one number, and one special
+          character.
+        </div>
       </div>
     </div>
-<div class="flex flex-col mb-2">
+    <div class="flex flex-col mb-2">
       <label for="designation" class="block text-gray-700">Designation</label>
-    <select id="designation" formControlName="designation"
-            class="mb-2 mt-1 text-gray-600 focus:outline-none focus:border focus:border-black font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-            [ngClass]="{ 'border-red-500': f['designation'].invalid && (f['designation'].dirty || f['designation'].touched) }">
-            <option *ngFor="let designation of designations" [value]="designation.title">{{ designation.title }}</option>
-      <option value="addNewDesignation">Add New Designation</option>
-    </select>
-    <input *ngIf="showNewDesignationInput" type="text" formControlName="newDesignation" placeholder="Enter new designation"
-       class="w-full h-10 px-3 text-sm border-gray-300 rounded border mt-2"
-       [ngClass]="{ 'border-red-500': f['newDesignation'].invalid && (f['newDesignation'].dirty || f['newDesignation'].touched) }">
-      <div *ngIf="f['newDesignation'].invalid && (f['newDesignation'].dirty || f['newDesignation'].touched)" class="text-red-500 text-sm mt-1">
-      <span *ngIf="f['newDesignation'].errors?.['required']">New designation is required.</span>
-      <span *ngIf="f['newDesignation'].errors?.['pattern']">Designation should start with a capital letter and subsequent letters should be lowercase. (e.g., Senior Developer)</span>
+      <select
+        id="designation"
+        formControlName="designation"
+        class="mb-2 mt-1 text-gray-600 focus:outline-none focus:border focus:border-black font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
+        [ngClass]="{
+          'border-red-500':
+            f['designation'].invalid &&
+            (f['designation'].dirty || f['designation'].touched)
+        }"
+      >
+        <option
+          *ngFor="let designation of designations"
+          [value]="designation.title"
+        >
+          {{ designation.title }}
+        </option>
+        <option value="addNewDesignation">Add New Designation</option>
+      </select>
+      <input
+        *ngIf="showNewDesignationInput"
+        type="text"
+        formControlName="newDesignation"
+        placeholder="Enter new designation"
+        class="w-full h-10 px-3 text-sm border-gray-300 rounded border mt-2"
+        [ngClass]="{
+          'border-red-500':
+            f['newDesignation'].invalid &&
+            (f['newDesignation'].dirty || f['newDesignation'].touched)
+        }"
+      />
+      <div
+        *ngIf="
+          f['newDesignation'].invalid &&
+          (f['newDesignation'].dirty || f['newDesignation'].touched)
+        "
+        class="text-red-500 text-sm mt-1"
+      >
+        <span *ngIf="f['newDesignation'].errors?.['required']"
+          >New designation is required.</span
+        >
+        <span *ngIf="f['newDesignation'].errors?.['pattern']"
+          >Designation should start with a capital letter and subsequent letters
+          should be lowercase. (e.g., Senior Developer)</span
+        >
+      </div>
+      <div
+        *ngIf="
+          f['designation'].invalid &&
+          (f['designation'].dirty || f['designation'].touched)
+        "
+        class="text-red-500 text-sm mt-1"
+      >
+        <span *ngIf="f['designation'].errors?.['required']"
+          >Designation is required.</span
+        >
+        <span *ngIf="f['designation'].errors?.['invalidDesignationFormat']"
+          >Designation should start with a capital letter and subsequent letters
+          should be lowercase. (e.g., Senior Developer)</span
+        >
+      </div>
     </div>
-    <div *ngIf="f['designation'].invalid && (f['designation'].dirty || f['designation'].touched)" class="text-red-500 text-sm mt-1">
-      <span *ngIf="f['designation'].errors?.['required']">Designation is required.</span>
-      <span *ngIf="f['designation'].errors?.['invalidDesignationFormat']">Designation should start with a capital letter and subsequent letters should be lowercase. (e.g., Senior Developer)</span>
+
+    <div class="flex items-center justify-start w-full mt-6">
+      <button type="button" (click)="onSubmit()" class="btn-submit">
+        Submit
+      </button>
+      <button type="button" (click)="onCancel()" class="btn-cancel">
+        Cancel
+      </button>
     </div>
-</div>
 
-<div class="flex items-center justify-start w-full mt-6">
-  <button type="button" (click)="onSubmit()" class="btn-submit">
-    Submit
-  </button>
-  <button type="button" (click)="onCancel()" class="btn-cancel">Cancel</button>
-</div>
-
-<button type="button" class="btn-close" (click)="onCancel()" aria-label="Close modal">
-  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path stroke="none" d="M0 0h24v24H0z" />
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
-  </svg>
-</button>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="onCancel()"
+      aria-label="Close modal"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="icon icon-tabler icon-tabler-x"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        stroke-width="2.5"
+        stroke="currentColor"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" />
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
   </form>
 </mat-dialog-content>

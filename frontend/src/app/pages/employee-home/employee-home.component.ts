@@ -9,30 +9,31 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [],
   templateUrl: './employee-home.component.html',
-  styleUrl: './employee-home.component.css'
+  styleUrl: './employee-home.component.css',
 })
-export class EmployeeHomeComponent implements OnInit{
-  employer!:EmployeeDetail;
-  constructor(private employeeService:EmployeeService,
+export class EmployeeHomeComponent implements OnInit {
+  employer!: EmployeeDetail;
+  constructor(
+    private employeeService: EmployeeService,
     private loaderService: LoaderService,
-    private authService:AuthService
-  ){}
+    private authService: AuthService
+  ) {}
   ngOnInit(): void {
-    this.loaderService.show()
+    this.loaderService.show();
     this.employeeService.getEmployee().subscribe({
-      next:(res)=>{
-        this.loaderService.hide()
-        if(res.success){
-            this.employer = res.data
-            console.log( this.employer);
+      next: (res) => {
+        this.loaderService.hide();
+        if (res.success) {
+          this.employer = res.data;
+          console.log(this.employer);
         }
       },
-      error:()=>{
-        this.loaderService.hide()
-      }
-    })
+      error: () => {
+        this.loaderService.hide();
+      },
+    });
   }
-  logout(){
-    this.authService.logout()
+  logout() {
+    this.authService.logout();
   }
 }

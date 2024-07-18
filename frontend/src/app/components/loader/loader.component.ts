@@ -7,12 +7,12 @@ import { LoaderService } from '../../services/loader.service';
   standalone: true,
   imports: [NgIf],
   templateUrl: './loader.component.html',
-  styleUrl: './loader.component.css'
+  styleUrl: './loader.component.css',
 })
 export class LoaderComponent implements OnInit {
   loading = false;
 
-  constructor(private loaderService: LoaderService) { }
+  constructor(private loaderService: LoaderService) {}
 
   ngOnInit(): void {
     this.loaderService.loaderState.subscribe((state: boolean) => {

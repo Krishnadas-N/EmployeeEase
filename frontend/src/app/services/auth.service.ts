@@ -9,54 +9,79 @@ import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root',
 })
-export class AuthService  {
+export class AuthService {
   private apiUrl = `${environment.backendUrl}/auth`;
 
   constructor(
     private http: HttpClient,
     private tokenService: TokenService,
-    private router:Router
+    private router: Router
   ) {}
 
   public isAuthenticated(): boolean {
     const token = this.tokenService.getAccessToken();
     try {
       const decodedToken = jwtDecode.jwtDecode(token as string);
-      console.log(decodedToken)
+      console.log(decodedToken);
       const now = Date.now().valueOf() / 1000;
-      return  decodedToken &&  decodedToken.exp? decodedToken.exp > now : false;
+      return decodedToken && decodedToken.exp ? decodedToken.exp > now : false;
     } catch (error) {
       console.error('Error decoding token:', error);
       return false;
     }
   }
 
-  employeeLogin(loginCredential:string,password: string): Observable<ApiResponse<AuthResponseData>> {
-    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/employee/login`, { loginCredential ,password})
+  employeeLogin(
+    loginCredential: string,
+    password: string
+  ): Observable<ApiResponse<AuthResponseData>> {
+    return this.http
+      .post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/employee/login`, {
+        loginCredential,
+        password,
+      })
       .pipe(
-        tap(response => {
+        tap((response) => {
           if (response.success) {
-            this.tokenService.setTokens(response.data.accessToken, response.data.refreshToken);
+            this.tokenService.setTokens(
+              response.data.accessToken,
+              response.data.refreshToken
+            );
           }
         })
       );
   }
 
-  adminLogin(email: string, password: string): Observable<ApiResponse<AuthResponseData>> {
-    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/admin/login`, { email, password })
+  adminLogin(
+    email: string,
+    password: string
+  ): Observable<ApiResponse<AuthResponseData>> {
+    return this.http
+      .post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/admin/login`, {
+        email,
+        password,
+      })
       .pipe(
-        tap(response => {
+        tap((response) => {
           if (response.success) {
-            this.tokenService.setTokens(response.data.accessToken, response.data.refreshToken);
+            this.tokenService.setTokens(
+              response.data.accessToken,
+              response.data.refreshToken
+            );
           }
         })
       );
   }
 
-  getRefreshToken(refreshToken: string): Observable<ApiResponse<AuthResponseData>> {
-    return this.http.post<ApiResponse<AuthResponseData>>(`${this.apiUrl}/refresh-token`, { refreshToken });
+  getRefreshToken(
+    refreshToken: string
+  ): Observable<ApiResponse<AuthResponseData>> {
+    return this.http.post<ApiResponse<AuthResponseData>>(
+      `${this.apiUrl}/refresh-token`,
+      { refreshToken }
+    );
   }
 
   logout(): void {
